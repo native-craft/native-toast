@@ -3,14 +3,6 @@ import type { StyleProp, ViewStyle, TextStyle } from "react-native";
 
 export type ToastType = "blank" | "success" | "error" | "loading" | "custom";
 
-export type ToastPosition =
-  | "top-left"
-  | "top-center"
-  | "top-right"
-  | "bottom-left"
-  | "bottom-center"
-  | "bottom-right";
-
 export interface Toast {
   id: string;
   type: ToastType;
@@ -27,7 +19,6 @@ export interface Toast {
 export interface ToastOptions {
   id?: string;
   duration?: number;
-  position?: ToastPosition;
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
 }

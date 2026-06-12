@@ -5,7 +5,7 @@ export default function RootLayout() {
   return (
     <>
       <Stack />
-      <ToastContainer position="top-center" />
+      <ToastContainer />
     </>
   );
 }

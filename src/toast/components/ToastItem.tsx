@@ -14,7 +14,6 @@ interface ToastItemProps {
   stackIndex: number;
   isExpanded: boolean;
   expandedOffset: number;
-  position: "top" | "bottom";
   onPress?: () => void;
   onDismiss: () => void;
   onUpdateHeight: (id: string, height: number) => void;
@@ -25,7 +24,6 @@ export function ToastItem({
   stackIndex,
   isExpanded,
   expandedOffset,
-  position,
   onPress,
   onDismiss,
   onUpdateHeight,
@@ -36,9 +34,7 @@ export function ToastItem({
   onDismissRef.current = onDismiss;
 
   const opacity = useRef(new Animated.Value(0)).current;
-  const entryY = useRef(
-    new Animated.Value(position === "top" ? -20 : 20)
-  ).current;
+  const entryY = useRef(new Animated.Value(-20)).current;
   const expandProgress = useRef(new Animated.Value(0)).current;
   const pan = useRef(new Animated.ValueXY()).current;
 
@@ -69,7 +65,7 @@ export function ToastItem({
           useNativeDriver: true,
         }),
         Animated.timing(entryY, {
-          toValue: position === "top" ? -10 : 10,
+          toValue: -10,
           duration: 150,
           useNativeDriver: true,
         }),
@@ -89,10 +85,8 @@ export function ToastItem({
   }, [isExpanded]);
 
   const collapsedScale = 1 - stackIndex * 0.06;
-  const direction = position === "top" ? 1 : -1;
-  const collapsedTranslateY = stackIndex * 6 * direction;
+  const collapsedTranslateY = stackIndex * 6;
   const collapsedOpacity = Math.max(0, 1 - stackIndex * 0.15);
-  const expandedTranslateY = expandedOffset * direction;
 
   const scale = expandProgress.interpolate({
     inputRange: [0, 1],
@@ -100,15 +94,12 @@ export function ToastItem({
   });
   const translateYFromStack = expandProgress.interpolate({
     inputRange: [0, 1],
-    outputRange: [collapsedTranslateY, expandedTranslateY],
+    outputRange: [collapsedTranslateY, expandedOffset],
   });
   const stackOpacity = expandProgress.interpolate({
     inputRange: [0, 1],
     outputRange: [collapsedOpacity, 1],
   });
-
-  const swipeThreshold = position === "top" ? -40 : 40;
-  const flyOutValue = position === "top" ? -300 : 300;
 
   const panResponder = useRef(
     PanResponder.create({
@@ -118,17 +109,12 @@ export function ToastItem({
         Math.abs(g.dy) > 5 &&
         Math.abs(g.dy) > Math.abs(g.dx),
       onPanResponderMove: (_, g) => {
-        const isCorrectDir = position === "top" ? g.dy < 0 : g.dy > 0;
-        if (isCorrectDir) pan.setValue({ x: 0, y: g.dy });
+        if (g.dy < 0) pan.setValue({ x: 0, y: g.dy });
       },
       onPanResponderRelease: (_, g) => {
-        const triggered =
-          position === "top"
-            ? g.dy < swipeThreshold
-            : g.dy > swipeThreshold;
-        if (triggered) {
+        if (g.dy < -40) {
           Animated.timing(pan.y, {
-            toValue: flyOutValue,
+            toValue: -300,
             duration: 200,
             useNativeDriver: true,
           }).start(() => onDismissRef.current());
@@ -203,7 +189,6 @@ export function ToastItem({
 
 const styles = StyleSheet.create({
   container: {
-    alignSelf: "center",
     maxWidth: "85%",
     minWidth: 120,
     backgroundColor: "#1C1C1E",

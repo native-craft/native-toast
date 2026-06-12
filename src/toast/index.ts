@@ -6,6 +6,5 @@ export type {
   Toast,
   ToastOptions,
   ToastType,
-  ToastPosition,
   ToastMessage,
 } from "./core/types";

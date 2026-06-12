@@ -4,42 +4,31 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useToaster } from "../core/useToaster";
 import { ToastItem } from "./ToastItem";
 import toast from "../core/toast";
-import type { ToastPosition } from "../core/types";
 
 interface ToastContainerProps {
-  position?: ToastPosition;
   topOffset?: number;
-  bottomOffset?: number;
   gutter?: number;
 }
 
 export function ToastContainer({
-  position = "top-center",
   topOffset = 50,
-  bottomOffset = 40,
   gutter = 8,
 }: ToastContainerProps) {
   const insets = useSafeAreaInsets();
   const { toasts, handlers } = useToaster();
   const [expanded, setExpanded] = useState(false);
 
-  const isTop = position.startsWith("top");
   const activeVisible = toasts.filter((t) => t.visible);
 
   useEffect(() => {
     if (activeVisible.length <= 1) setExpanded(false);
   }, [activeVisible.length]);
 
-  const edgeOffset = isTop
-    ? topOffset + insets.top
-    : bottomOffset + insets.bottom;
+  const edgeOffset = topOffset + insets.top;
 
   let runningOffset = 0;
   const expandedOffsets: Record<string, number> = {};
-  const orderedVisible = isTop
-    ? [...activeVisible]
-    : [...activeVisible].reverse();
-  orderedVisible.forEach((t) => {
+  activeVisible.forEach((t) => {
     expandedOffsets[t.id] = runningOffset;
     runningOffset += (t.height ?? 48) + gutter;
   });
@@ -54,15 +43,16 @@ export function ToastContainer({
       )}
 
       <View
-        style={[
-          styles.stack,
-          isTop ? { top: edgeOffset } : { bottom: edgeOffset },
-        ]}
+        style={[styles.stack, { top: edgeOffset }]}
         pointerEvents="box-none"
       >
         <Pressable
           onPress={() => {
-            if (!expanded && activeVisible.length > 1) setExpanded(true);
+            if (expanded) {
+              setExpanded(false);
+            } else if (activeVisible.length > 1) {
+              setExpanded(true);
+            }
           }}
           style={{ alignItems: "center" }}
         >
@@ -75,10 +65,12 @@ export function ToastContainer({
                 stackIndex={stackIndex === -1 ? 0 : stackIndex}
                 isExpanded={expanded}
                 expandedOffset={expandedOffsets[t.id] ?? 0}
-                position={isTop ? "top" : "bottom"}
                 onPress={() => {
-                  if (!expanded && activeVisible.length > 1)
+                  if (expanded) {
+                    setExpanded(false);
+                  } else if (activeVisible.length > 1) {
                     setExpanded(true);
+                  }
                 }}
                 onDismiss={() => {
                   if (!expanded && activeVisible.length > 1) {
