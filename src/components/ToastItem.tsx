@@ -179,7 +179,7 @@ export function ToastItem({
       ]}
       onLayout={handleLayout}
     >
-      <Pressable onPress={onPress} android_ripple={null} style={styles.inner}>
+      <Pressable onPress={onPress} style={styles.inner}>
         <ToastIcon type={toast.type} size={20} customIcon={toast.icon} />
         {React.isValidElement(messageContent) ? (
           messageContent
