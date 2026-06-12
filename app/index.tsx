@@ -1,120 +1,115 @@
 import { useRef, useState } from "react";
 import { View, StyleSheet, Pressable, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { toast, ToastContainer } from "@/src/toast";
-import type { ToastTheme } from "@/src/toast";
+import { toast, setTheme, useTheme } from "@/src/toast";
 
 export default function Index() {
   const loadingIdRef = useRef<string | null>(null);
-  const [theme, setTheme] = useState<ToastTheme>("dark");
+  const theme = useTheme();
 
-  const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
+  const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
 
   return (
-    <>
-      <View style={styles.container}>
-        <Pressable style={styles.themeToggle} onPress={toggleTheme}>
-          <Text style={styles.themeToggleText}>
-            {theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode"}
-          </Text>
-        </Pressable>
+    <View style={styles.container}>
+      <Pressable style={styles.themeToggle} onPress={toggleTheme}>
+        <Text style={styles.themeToggleText}>
+          {theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode"}
+        </Text>
+      </Pressable>
 
-        <Text style={styles.sectionTitle}>Toast Types</Text>
+      <Text style={styles.sectionTitle}>Toast Types</Text>
 
-        <Pressable
-          style={styles.button}
-          onPress={() => toast("Hello from blank toast!")}
-        >
-          <Text style={styles.buttonText}>Blank Toast</Text>
-        </Pressable>
+      <Pressable
+        style={styles.button}
+        onPress={() => toast("Hello from blank toast!")}
+      >
+        <Text style={styles.buttonText}>Blank Toast</Text>
+      </Pressable>
 
-        <Pressable
-          style={[styles.button, { backgroundColor: "#30D158" }]}
-          onPress={() => toast.success("Operation successful!")}
-        >
-          <Text style={styles.buttonText}>Success</Text>
-        </Pressable>
+      <Pressable
+        style={[styles.button, { backgroundColor: "#30D158" }]}
+        onPress={() => toast.success("Operation successful!")}
+      >
+        <Text style={styles.buttonText}>Success</Text>
+      </Pressable>
 
-        <Pressable
-          style={[styles.button, { backgroundColor: "#FF453A" }]}
-          onPress={() => toast.error("Something went wrong")}
-        >
-          <Text style={styles.buttonText}>Error</Text>
-        </Pressable>
+      <Pressable
+        style={[styles.button, { backgroundColor: "#FF453A" }]}
+        onPress={() => toast.error("Something went wrong")}
+      >
+        <Text style={styles.buttonText}>Error</Text>
+      </Pressable>
 
-        <Pressable
-          style={[styles.button, { backgroundColor: "#5856D6" }]}
-          onPress={() =>
-            toast(
-              "This is a longer message that wraps across multiple lines to test text layout in the toast bubble"
-            )
+      <Pressable
+        style={[styles.button, { backgroundColor: "#5856D6" }]}
+        onPress={() =>
+          toast(
+            "This is a longer message that wraps across multiple lines to test text layout in the toast bubble"
+          )
+        }
+      >
+        <Text style={styles.buttonText}>Multi-line</Text>
+      </Pressable>
+
+      <Pressable
+        style={[styles.button, { backgroundColor: "#636366" }]}
+        onPress={() => {
+          if (loadingIdRef.current) {
+            toast.dismiss(loadingIdRef.current);
+            loadingIdRef.current = null;
+          } else {
+            loadingIdRef.current = toast.loading("Loading...");
           }
-        >
-          <Text style={styles.buttonText}>Multi-line</Text>
-        </Pressable>
+        }}
+      >
+        <Text style={styles.buttonText}>Loading (toggle)</Text>
+      </Pressable>
 
-        <Pressable
-          style={[styles.button, { backgroundColor: "#636366" }]}
-          onPress={() => {
-            if (loadingIdRef.current) {
-              toast.dismiss(loadingIdRef.current);
-              loadingIdRef.current = null;
-            } else {
-              loadingIdRef.current = toast.loading("Loading...");
+      <Pressable
+        style={styles.button}
+        onPress={() =>
+          toast.promise(
+            new Promise<string>((resolve) =>
+              setTimeout(() => resolve("done"), 2000)
+            ),
+            {
+              loading: "Fetching data...",
+              success: (d: string) => `Got: ${d}`,
+              error: "Failed!",
             }
-          }}
-        >
-          <Text style={styles.buttonText}>Loading (toggle)</Text>
-        </Pressable>
+          )
+        }
+      >
+        <Text style={styles.buttonText}>Promise Toast</Text>
+      </Pressable>
 
-        <Pressable
-          style={styles.button}
-          onPress={() =>
-            toast.promise(
-              new Promise<string>((resolve) =>
-                setTimeout(() => resolve("done"), 2000)
-              ),
-              {
-                loading: "Fetching data...",
-                success: (d: string) => `Got: ${d}`,
-                error: "Failed!",
-              }
-            )
-          }
-        >
-          <Text style={styles.buttonText}>Promise Toast</Text>
-        </Pressable>
+      <Text style={styles.sectionTitle}>Custom Icons</Text>
 
-        <Text style={styles.sectionTitle}>Custom Icons</Text>
+      <Pressable
+        style={styles.button}
+        onPress={() => toast("File saved!", { icon: "💾" })}
+      >
+        <Text style={styles.buttonText}>💾 Emoji Icon</Text>
+      </Pressable>
 
-        <Pressable
-          style={styles.button}
-          onPress={() => toast("File saved!", { icon: "💾" })}
-        >
-          <Text style={styles.buttonText}>💾 Emoji Icon</Text>
-        </Pressable>
+      <Pressable
+        style={styles.button}
+        onPress={() =>
+          toast("WiFi connected", {
+            icon: <Ionicons name="wifi" size={20} color="#30D158" />,
+          })
+        }
+      >
+        <Text style={styles.buttonText}>📶 Component Icon</Text>
+      </Pressable>
 
-        <Pressable
-          style={styles.button}
-          onPress={() =>
-            toast("WiFi connected", {
-              icon: <Ionicons name="wifi" size={20} color="#30D158" />,
-            })
-          }
-        >
-          <Text style={styles.buttonText}>📶 Component Icon</Text>
-        </Pressable>
-
-        <Pressable
-          style={[styles.button, { backgroundColor: "#30D158" }]}
-          onPress={() => toast.success("Deployed!", { icon: "🚀" })}
-        >
-          <Text style={styles.buttonText}>🚀 Override Success</Text>
-        </Pressable>
-      </View>
-
-      <ToastContainer theme={theme} />
-    </>
+      <Pressable
+        style={[styles.button, { backgroundColor: "#30D158" }]}
+        onPress={() => toast.success("Deployed!", { icon: "🚀" })}
+      >
+        <Text style={styles.buttonText}>🚀 Override Success</Text>
+      </Pressable>
+    </View>
   );
 }
 
