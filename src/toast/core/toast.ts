@@ -28,6 +28,7 @@ function createToast(
     height: undefined,
     pauseDuration: 0,
     createdAt: Date.now(),
+    icon: opts?.icon,
     style: opts?.style,
     textStyle: opts?.textStyle,
   };

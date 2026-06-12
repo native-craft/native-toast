@@ -6,14 +6,20 @@ import {
   Text,
   PanResponder,
 } from "react-native";
-import type { Toast } from "../core/types";
+import type { Toast, ToastTheme } from "../core/types";
 import { ToastIcon } from "./ToastIcon";
+
+const THEME_TOKENS = {
+  dark: { surface: "#1C1C1E", text: "#FFFFFF", shadowOpacity: 0.15 },
+  light: { surface: "#FFFFFF", text: "#1C1C1E", shadowOpacity: 0.08 },
+};
 
 interface ToastItemProps {
   toast: Toast;
   stackIndex: number;
   isExpanded: boolean;
   expandedOffset: number;
+  theme: ToastTheme;
   onPress?: () => void;
   onDismiss: () => void;
   onUpdateHeight: (id: string, height: number) => void;
@@ -24,6 +30,7 @@ export function ToastItem({
   stackIndex,
   isExpanded,
   expandedOffset,
+  theme,
   onPress,
   onDismiss,
   onUpdateHeight,
@@ -145,6 +152,8 @@ export function ToastItem({
     [toast.id, toast.height, onUpdateHeight]
   );
 
+  const tokens = THEME_TOKENS[theme];
+
   return (
     <Animated.View
       {...panResponder.panHandlers}
@@ -152,6 +161,8 @@ export function ToastItem({
         styles.container,
         toast.style,
         {
+          backgroundColor: tokens.surface,
+          shadowOpacity: tokens.shadowOpacity,
           opacity: Animated.multiply(opacity, stackOpacity) as any,
           transform: [
             {
@@ -169,14 +180,14 @@ export function ToastItem({
       onLayout={handleLayout}
     >
       <Pressable onPress={onPress} android_ripple={null} style={styles.inner}>
-        <ToastIcon type={toast.type} size={20} />
+        <ToastIcon type={toast.type} size={20} customIcon={toast.icon} />
         {React.isValidElement(messageContent) ? (
           messageContent
         ) : (
           <Text
             selectable={false}
             allowFontScaling={false}
-            style={[styles.message, toast.textStyle]}
+            style={[styles.message, { color: tokens.text }, toast.textStyle]}
             numberOfLines={2}
           >
             {messageContent}
@@ -191,12 +202,10 @@ const styles = StyleSheet.create({
   container: {
     maxWidth: "85%",
     minWidth: 120,
-    backgroundColor: "#1C1C1E",
     borderRadius: 12,
     overflow: "hidden",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
     shadowRadius: 12,
     elevation: 8,
   },
@@ -208,7 +217,6 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   message: {
-    color: "#FFFFFF",
     fontSize: 14,
     fontWeight: "500",
     lineHeight: 20,

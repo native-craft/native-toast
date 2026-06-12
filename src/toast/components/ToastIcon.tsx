@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Animated, ActivityIndicator } from "react-native";
+import { Animated, ActivityIndicator, StyleSheet, Text } from "react-native";
 import Svg, { Circle, Polyline, Line } from "react-native-svg";
 import type { ToastType } from "../core/types";
 
@@ -15,9 +15,17 @@ const COLORS = {
 interface ToastIconProps {
   type: ToastType;
   size?: number;
+  customIcon?: React.ReactNode;
 }
 
-export function ToastIcon({ type, size = 20 }: ToastIconProps) {
+export function ToastIcon({ type, size = 20, customIcon }: ToastIconProps) {
+  if (customIcon) {
+    if (typeof customIcon === "string") {
+      return <Text style={styles.emoji}>{customIcon}</Text>;
+    }
+    return <>{customIcon}</>;
+  }
+
   if (type === "blank" || type === "custom") return null;
 
   if (type === "loading") {
@@ -151,3 +159,10 @@ function ErrorIcon({ size }: { size: number }) {
     </Animated.View>
   );
 }
+
+const styles = StyleSheet.create({
+  emoji: {
+    fontSize: 18,
+    lineHeight: 20,
+  },
+});

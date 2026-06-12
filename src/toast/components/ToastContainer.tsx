@@ -4,15 +4,18 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useToaster } from "../core/useToaster";
 import { ToastItem } from "./ToastItem";
 import toast from "../core/toast";
+import type { ToastTheme } from "../core/types";
 
 interface ToastContainerProps {
   topOffset?: number;
   gutter?: number;
+  theme?: ToastTheme;
 }
 
 export function ToastContainer({
   topOffset = 50,
   gutter = 8,
+  theme = "dark",
 }: ToastContainerProps) {
   const insets = useSafeAreaInsets();
   const { toasts, handlers } = useToaster();
@@ -65,6 +68,7 @@ export function ToastContainer({
                 stackIndex={stackIndex === -1 ? 0 : stackIndex}
                 isExpanded={expanded}
                 expandedOffset={expandedOffsets[t.id] ?? 0}
+                theme={theme}
                 onPress={() => {
                   if (expanded) {
                     setExpanded(false);
