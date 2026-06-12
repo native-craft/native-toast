@@ -1,7 +1,10 @@
+import { useRef } from "react";
 import { View, StyleSheet, Pressable, Text } from "react-native";
 import { toast } from "@/src/toast";
 
 export default function Index() {
+  const loadingIdRef = useRef<string | null>(null);
+
   return (
     <View style={styles.container}>
       <Pressable
@@ -26,10 +29,28 @@ export default function Index() {
       </Pressable>
 
       <Pressable
-        style={[styles.button, { backgroundColor: "#636366" }]}
-        onPress={() => toast.loading("Loading...")}
+        style={[styles.button, { backgroundColor: "#5856D6" }]}
+        onPress={() =>
+          toast(
+            "This is a longer message that wraps across multiple lines to test text layout in the toast bubble"
+          )
+        }
       >
-        <Text style={styles.buttonText}>Loading (stays forever)</Text>
+        <Text style={styles.buttonText}>Multi-line</Text>
+      </Pressable>
+
+      <Pressable
+        style={[styles.button, { backgroundColor: "#636366" }]}
+        onPress={() => {
+          if (loadingIdRef.current) {
+            toast.dismiss(loadingIdRef.current);
+            loadingIdRef.current = null;
+          } else {
+            loadingIdRef.current = toast.loading("Loading...");
+          }
+        }}
+      >
+        <Text style={styles.buttonText}>Loading (toggle)</Text>
       </Pressable>
 
       <Pressable
@@ -48,17 +69,6 @@ export default function Index() {
         }
       >
         <Text style={styles.buttonText}>Promise Toast</Text>
-      </Pressable>
-
-      <Pressable
-        style={[styles.button, { backgroundColor: "#5856D6" }]}
-        onPress={() => {
-          toast.success("First");
-          setTimeout(() => toast.error("Second"), 300);
-          setTimeout(() => toast("Third"), 600);
-        }}
-      >
-        <Text style={styles.buttonText}>Rapid Fire (x3)</Text>
       </Pressable>
     </View>
   );

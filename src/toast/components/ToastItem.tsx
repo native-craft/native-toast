@@ -1,61 +1,75 @@
 import React, { useEffect, useRef, useCallback } from "react";
-import { Animated, StyleSheet, View, Text } from "react-native";
-import type { Toast, ToastPosition } from "../core/types";
+import {
+  Animated,
+  StyleSheet,
+  Pressable,
+  Text,
+  PanResponder,
+} from "react-native";
+import type { Toast } from "../core/types";
 import { ToastIcon } from "./ToastIcon";
 
 interface ToastItemProps {
   toast: Toast;
-  position: ToastPosition;
-  offset: number;
-  topOffset: number;
-  bottomOffset: number;
+  stackIndex: number;
+  isExpanded: boolean;
+  expandedOffset: number;
+  position: "top" | "bottom";
+  onPress?: () => void;
+  onDismiss: () => void;
   onUpdateHeight: (id: string, height: number) => void;
 }
 
-const ENTER_SPRING = { tension: 100, friction: 12 } as const;
-
 export function ToastItem({
   toast,
+  stackIndex,
+  isExpanded,
+  expandedOffset,
   position,
-  offset,
-  topOffset,
-  bottomOffset,
+  onPress,
+  onDismiss,
   onUpdateHeight,
 }: ToastItemProps) {
-  const opacity = useRef(new Animated.Value(toast.visible ? 0 : 1)).current;
-  const translateY = useRef(new Animated.Value(0)).current;
+  const toastVisibleRef = useRef(toast.visible);
+  toastVisibleRef.current = toast.visible;
+  const onDismissRef = useRef(onDismiss);
+  onDismissRef.current = onDismiss;
 
-  const isTop = position.startsWith("top");
-  const initialY = isTop ? -20 : 20;
+  const opacity = useRef(new Animated.Value(0)).current;
+  const entryY = useRef(
+    new Animated.Value(position === "top" ? -20 : 20)
+  ).current;
+  const expandProgress = useRef(new Animated.Value(0)).current;
+  const pan = useRef(new Animated.ValueXY()).current;
 
   useEffect(() => {
-    translateY.setValue(initialY);
+    Animated.parallel([
+      Animated.spring(opacity, {
+        toValue: 1,
+        tension: 100,
+        friction: 12,
+        useNativeDriver: true,
+      }),
+      Animated.spring(entryY, {
+        toValue: 0,
+        tension: 100,
+        friction: 12,
+        useNativeDriver: true,
+      }),
+    ]).start();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (toast.visible) {
+    if (!toast.visible) {
       Animated.parallel([
-        Animated.spring(translateY, {
-          toValue: 0,
-          ...ENTER_SPRING,
-          useNativeDriver: true,
-        }),
         Animated.timing(opacity, {
-          toValue: 1,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    } else {
-      Animated.parallel([
-        Animated.timing(translateY, {
-          toValue: isTop ? -10 : 10,
+          toValue: 0,
           duration: 150,
           useNativeDriver: true,
         }),
-        Animated.timing(opacity, {
-          toValue: 0,
+        Animated.timing(entryY, {
+          toValue: position === "top" ? -10 : 10,
           duration: 150,
           useNativeDriver: true,
         }),
@@ -63,6 +77,77 @@ export function ToastItem({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toast.visible]);
+
+  useEffect(() => {
+    Animated.spring(expandProgress, {
+      toValue: isExpanded ? 1 : 0,
+      tension: 100,
+      friction: 12,
+      useNativeDriver: true,
+    }).start();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isExpanded]);
+
+  const collapsedScale = 1 - stackIndex * 0.06;
+  const direction = position === "top" ? 1 : -1;
+  const collapsedTranslateY = stackIndex * 6 * direction;
+  const collapsedOpacity = Math.max(0, 1 - stackIndex * 0.15);
+  const expandedTranslateY = expandedOffset * direction;
+
+  const scale = expandProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [collapsedScale, 1],
+  });
+  const translateYFromStack = expandProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [collapsedTranslateY, expandedTranslateY],
+  });
+  const stackOpacity = expandProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [collapsedOpacity, 1],
+  });
+
+  const swipeThreshold = position === "top" ? -40 : 40;
+  const flyOutValue = position === "top" ? -300 : 300;
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => false,
+      onMoveShouldSetPanResponder: (_, g) =>
+        toastVisibleRef.current &&
+        Math.abs(g.dy) > 5 &&
+        Math.abs(g.dy) > Math.abs(g.dx),
+      onPanResponderMove: (_, g) => {
+        const isCorrectDir = position === "top" ? g.dy < 0 : g.dy > 0;
+        if (isCorrectDir) pan.setValue({ x: 0, y: g.dy });
+      },
+      onPanResponderRelease: (_, g) => {
+        const triggered =
+          position === "top"
+            ? g.dy < swipeThreshold
+            : g.dy > swipeThreshold;
+        if (triggered) {
+          Animated.timing(pan.y, {
+            toValue: flyOutValue,
+            duration: 200,
+            useNativeDriver: true,
+          }).start(() => onDismissRef.current());
+        } else {
+          Animated.spring(pan.y, {
+            toValue: 0,
+            tension: 100,
+            friction: 10,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    })
+  ).current;
+
+  const zIndex = 100 - stackIndex;
+
+  const messageContent =
+    typeof toast.message === "function" ? toast.message(toast) : toast.message;
 
   const handleLayout = useCallback(
     (e: any) => {
@@ -74,65 +159,68 @@ export function ToastItem({
     [toast.id, toast.height, onUpdateHeight]
   );
 
-  const positionStyle = isTop
-    ? { top: topOffset + offset }
-    : { bottom: bottomOffset + offset };
-
-  const alignItems: "flex-start" | "center" | "flex-end" = position.endsWith(
-    "left"
-  )
-    ? "flex-start"
-    : position.endsWith("right")
-      ? "flex-end"
-      : "center";
-
-  const messageContent =
-    typeof toast.message === "function" ? toast.message(toast) : toast.message;
-
   return (
     <Animated.View
+      {...panResponder.panHandlers}
       style={[
-        styles.wrapper,
-        positionStyle,
-        { opacity, transform: [{ translateY }] },
-        { alignItems },
+        styles.container,
+        toast.style,
+        {
+          opacity: Animated.multiply(opacity, stackOpacity) as any,
+          transform: [
+            {
+              translateY: Animated.add(
+                entryY,
+                Animated.add(translateYFromStack, pan.y)
+              ) as any,
+            },
+            { scale },
+          ],
+          zIndex,
+          position: "absolute",
+        },
       ]}
-      pointerEvents="box-none"
+      onLayout={handleLayout}
     >
-      <View style={[styles.toast, toast.style]} onLayout={handleLayout}>
-        <ToastIcon type={toast.type} />
+      <Pressable onPress={onPress} android_ripple={null} style={styles.inner}>
+        <ToastIcon type={toast.type} size={20} />
         {React.isValidElement(messageContent) ? (
           messageContent
         ) : (
-          <Text style={[styles.message, toast.textStyle]}>
+          <Text
+            selectable={false}
+            allowFontScaling={false}
+            style={[styles.message, toast.textStyle]}
+            numberOfLines={2}
+          >
             {messageContent}
           </Text>
         )}
-      </View>
+      </Pressable>
     </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    position: "absolute",
-    left: 16,
-    right: 16,
-  },
-  toast: {
+  container: {
+    alignSelf: "center",
+    maxWidth: "85%",
+    minWidth: 120,
     backgroundColor: "#1C1C1E",
     borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
+    overflow: "hidden",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 12,
     elevation: 8,
-    alignSelf: "center",
+  },
+  inner: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    gap: 10,
   },
   message: {
     color: "#FFFFFF",
