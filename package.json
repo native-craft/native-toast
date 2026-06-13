@@ -32,12 +32,18 @@
     "!**/.*"
   ],
   "scripts": {
-    "example": "pnpm --filter @ncrft/native-toast-example",
+    "dev:example": "pnpm --filter @ncrft/native-toast-example start",
+    "dev:docs": "pnpm --filter docs dev",
+    "build": "bob build",
+    "build:docs": "pnpm --filter docs build",
+    "build:example": "pnpm --filter @ncrft/native-toast-example build:web",
+    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "typecheck": "tsc",
+    "typecheck:docs": "pnpm --filter docs typecheck",
+    "typecheck:all": "pnpm run typecheck && pnpm run typecheck:docs",
+    "test": "jest",
     "clean": "del-cli lib",
     "prepare": "bob build",
-    "typecheck": "tsc",
-    "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "test": "jest",
     "release": "release-it --only-version"
   },
   "keywords": [

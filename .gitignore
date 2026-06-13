@@ -84,3 +84,8 @@ android/generated
 
 # React Native Nitro Modules
 nitrogen/
+
+# Fumadocs generated
+docs/.source/
+docs/src/pages.gen.ts
+docs/dist/

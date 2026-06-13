@@ -1,3 +1,5 @@
+# NOTE: This action uses yarn (yarn install --immutable, yarn.lock cache).
+# Needs updating to pnpm before CI is re-enabled.
 name: Setup
 description: Setup Node.js and install dependencies
 

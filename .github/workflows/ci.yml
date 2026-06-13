@@ -1,14 +1,19 @@
 name: CI
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-  merge_group:
-    types:
-      - checks_requested
+
+# NOTE: CI disabled during yarn → pnpm migration.
+# All commands below still use `yarn` and need updating to `pnpm`
+# before re-enabling. To re-enable, uncomment the `on:` block below.
+#
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches:
+#       - main
+#   merge_group:
+#     types:
+#       - checks_requested
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
