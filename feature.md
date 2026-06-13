@@ -34,7 +34,6 @@ A zero-dependency, headless toast notification system for React Native (Expo) wi
 | `custom`  | None (use `icon` option)         | Fully custom content   |
 
 - **Message types**: plain string, any `ReactNode`, or render function `(toast) => ReactNode`
-- **Per-type default options**: override `icon`, `style`, `textStyle`, `duration` per toast type
 - **User overrides**: `opts.style` and `opts.textStyle` spread onto the toast container and text
 
 ---
@@ -105,9 +104,9 @@ A zero-dependency, headless toast notification system for React Native (Expo) wi
 ## 5. Gesture Handling (PanResponder)
 
 | Behavior             | Detail                                         |
-| -------------------- | ---------------------------------------------- | --- | -------- | --- | --- | --- | --- |
+| -------------------- | ---------------------------------------------- |
 | Swipe direction      | Vertical only (upward to dismiss)              |
-| Activation threshold | `                                              | dy  | > 5`AND` | dy  | >   | dx  | `   |
+| Activation threshold | `\|dy\| > 5` AND `\|dy\| > \|dx\|`             |
 | Dismiss threshold    | `dy < -40px`                                   |
 | Horizontal lock-out  | Horizontal swipes ignored                      |
 | Tap passthrough      | `onStartShouldSetPanResponder` returns `false` |
@@ -200,7 +199,6 @@ A zero-dependency, headless toast notification system for React Native (Expo) wi
 | **Text max lines**     | 2 lines with ellipsis                                      |
 | **Font scaling**       | Disabled (`allowFontScaling={false}`)                      |
 | **Text selection**     | Disabled (`selectable={false}`)                            |
-| **Android ripple**     | Disabled (`android_ripple={null}`)                         |
 
 ---
 
@@ -219,7 +217,7 @@ import {
   type ToastType,
   type ToastTheme,
   type ToastMessage,
-} from "@/src/toast";
+} from "@ncrft/native-toast";
 ```
 
 ---
