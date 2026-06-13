@@ -1,4 +1,4 @@
-import type { ToasterState, Action } from "./types";
+import type { ToasterState, Action } from './types';
 
 const TOAST_LIMIT = 3;
 
@@ -9,23 +9,23 @@ const listeners: Listener[] = [];
 
 function reducer(state: ToasterState, action: Action): ToasterState {
   switch (action.type) {
-    case "ADD_TOAST":
+    case 'ADD_TOAST':
       return {
         ...state,
         toasts: [action.toast, ...state.toasts].slice(0, TOAST_LIMIT),
       };
-    case "UPDATE_TOAST":
+    case 'UPDATE_TOAST':
       return {
         ...state,
         toasts: state.toasts.map((t) =>
           t.id === action.toast.id ? { ...t, ...action.toast } : t
         ),
       };
-    case "UPSERT_TOAST":
+    case 'UPSERT_TOAST':
       return state.toasts.find((t) => t.id === action.toast.id)
-        ? reducer(state, { type: "UPDATE_TOAST", toast: action.toast })
-        : reducer(state, { type: "ADD_TOAST", toast: action.toast });
-    case "DISMISS_TOAST":
+        ? reducer(state, { type: 'UPDATE_TOAST', toast: action.toast })
+        : reducer(state, { type: 'ADD_TOAST', toast: action.toast });
+    case 'DISMISS_TOAST':
       return {
         ...state,
         toasts: state.toasts.map((t) =>
@@ -34,16 +34,16 @@ function reducer(state: ToasterState, action: Action): ToasterState {
             : t
         ),
       };
-    case "REMOVE_TOAST":
+    case 'REMOVE_TOAST':
       return {
         ...state,
         toasts: action.toastId
           ? state.toasts.filter((t) => t.id !== action.toastId)
           : [],
       };
-    case "START_PAUSE":
+    case 'START_PAUSE':
       return { ...state, pausedAt: action.time };
-    case "END_PAUSE": {
+    case 'END_PAUSE': {
       const elapsed = action.time - (state.pausedAt ?? action.time);
       return {
         ...state,

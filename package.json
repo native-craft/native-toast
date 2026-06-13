@@ -38,6 +38,7 @@
     "build:docs": "pnpm --filter docs build",
     "build:example": "pnpm --filter @ncrft/native-toast-example build:web",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "format": "prettier --write \"**/*.{js,ts,tsx,json,md}\"",
     "typecheck": "tsc",
     "typecheck:docs": "pnpm --filter docs typecheck",
     "typecheck:all": "pnpm run typecheck && pnpm run typecheck:docs",

@@ -1,7 +1,7 @@
-import { useEffect } from "react";
-import { AppState } from "react-native";
-import { useToasterStore } from "./useToasterStore";
-import { dispatch } from "./store";
+import { useEffect } from 'react';
+import { AppState } from 'react-native';
+import { useToasterStore } from './useToasterStore';
+import { dispatch } from './store';
 
 const REMOVE_DELAY = 1000;
 
@@ -9,11 +9,11 @@ export function useToaster() {
   const { toasts, pausedAt } = useToasterStore();
 
   useEffect(() => {
-    const sub = AppState.addEventListener("change", (state) => {
-      if (state !== "active") {
-        dispatch({ type: "START_PAUSE", time: Date.now() });
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state !== 'active') {
+        dispatch({ type: 'START_PAUSE', time: Date.now() });
       } else {
-        dispatch({ type: "END_PAUSE", time: Date.now() });
+        dispatch({ type: 'END_PAUSE', time: Date.now() });
       }
     });
     return () => sub.remove();
@@ -30,14 +30,14 @@ export function useToaster() {
       const remaining = t.duration - (now - t.createdAt) + t.pauseDuration;
 
       if (remaining < 0) {
-        dispatch({ type: "DISMISS_TOAST", toastId: t.id });
+        dispatch({ type: 'DISMISS_TOAST', toastId: t.id });
         return undefined;
       }
 
       return setTimeout(() => {
-        dispatch({ type: "DISMISS_TOAST", toastId: t.id });
+        dispatch({ type: 'DISMISS_TOAST', toastId: t.id });
         setTimeout(() => {
-          dispatch({ type: "REMOVE_TOAST", toastId: t.id });
+          dispatch({ type: 'REMOVE_TOAST', toastId: t.id });
         }, REMOVE_DELAY);
       }, remaining);
     });
@@ -46,10 +46,10 @@ export function useToaster() {
   }, [toasts, pausedAt]);
 
   const handlers = {
-    startPause: () => dispatch({ type: "START_PAUSE", time: Date.now() }),
-    endPause: () => dispatch({ type: "END_PAUSE", time: Date.now() }),
+    startPause: () => dispatch({ type: 'START_PAUSE', time: Date.now() }),
+    endPause: () => dispatch({ type: 'END_PAUSE', time: Date.now() }),
     updateHeight: (toastId: string, height: number) => {
-      dispatch({ type: "UPDATE_TOAST", toast: { id: toastId, height } });
+      dispatch({ type: 'UPDATE_TOAST', toast: { id: toastId, height } });
     },
   };
 

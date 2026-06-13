@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import type { ToastTheme } from "./types";
+import { useEffect, useState } from 'react';
+import type { ToastTheme } from './types';
 
 type Listener = (theme: ToastTheme) => void;
 
-let currentTheme: ToastTheme = "dark";
+let currentTheme: ToastTheme = 'dark';
 const listeners: Listener[] = [];
 
 export function setTheme(theme: ToastTheme) {

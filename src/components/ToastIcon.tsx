@@ -1,15 +1,15 @@
-import React, { useEffect, useRef } from "react";
-import { Animated, ActivityIndicator, StyleSheet, Text } from "react-native";
-import Svg, { Circle, Polyline, Line } from "react-native-svg";
-import type { ToastType } from "../core/types";
+import React, { useEffect, useRef } from 'react';
+import { Animated, ActivityIndicator, StyleSheet, Text } from 'react-native';
+import Svg, { Circle, Polyline, Line } from 'react-native-svg';
+import type { ToastType } from '../core/types';
 
 const AnimatedPolyline = Animated.createAnimatedComponent(Polyline);
 const AnimatedLine = Animated.createAnimatedComponent(Line);
 
 const COLORS = {
-  success: "#30D158",
-  error: "#FF453A",
-  neutral: "#636366",
+  success: '#30D158',
+  error: '#FF453A',
+  neutral: '#636366',
 };
 
 interface ToastIconProps {
@@ -20,23 +20,23 @@ interface ToastIconProps {
 
 export function ToastIcon({ type, size = 20, customIcon }: ToastIconProps) {
   if (customIcon) {
-    if (typeof customIcon === "string") {
+    if (typeof customIcon === 'string') {
       return <Text style={styles.emoji}>{customIcon}</Text>;
     }
     return <>{customIcon}</>;
   }
 
-  if (type === "blank" || type === "custom") return null;
+  if (type === 'blank' || type === 'custom') return null;
 
-  if (type === "loading") {
+  if (type === 'loading') {
     return <ActivityIndicator size="small" color={COLORS.neutral} />;
   }
 
-  if (type === "success") {
+  if (type === 'success') {
     return <SuccessIcon size={size} />;
   }
 
-  if (type === "error") {
+  if (type === 'error') {
     return <ErrorIcon size={size} />;
   }
 

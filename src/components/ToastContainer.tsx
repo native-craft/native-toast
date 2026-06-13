@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
-import { View, Pressable, StyleSheet } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useToaster } from "../core/useToaster";
-import { ToastItem } from "./ToastItem";
-import toast from "../core/toast";
-import type { ToastTheme } from "../core/types";
+import { useState, useEffect } from 'react';
+import { View, Pressable, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useToaster } from '../core/useToaster';
+import { ToastItem } from './ToastItem';
+import toast from '../core/toast';
+import type { ToastTheme } from '../core/types';
 
 interface ToastContainerProps {
   topOffset?: number;
@@ -15,7 +15,7 @@ interface ToastContainerProps {
 export function ToastContainer({
   topOffset = 50,
   gutter = 8,
-  theme = "dark",
+  theme = 'dark',
 }: ToastContainerProps) {
   const insets = useSafeAreaInsets();
   const { toasts, handlers } = useToaster();
@@ -57,7 +57,7 @@ export function ToastContainer({
               setExpanded(true);
             }
           }}
-          style={{ alignItems: "center" }}
+          style={{ alignItems: 'center' }}
         >
           {toasts.map((t) => {
             const stackIndex = activeVisible.findIndex((v) => v.id === t.id);
@@ -95,9 +95,9 @@ export function ToastContainer({
 
 const styles = StyleSheet.create({
   stack: {
-    position: "absolute",
+    position: 'absolute',
     left: 0,
     right: 0,
-    alignItems: "center",
+    alignItems: 'center',
   },
 });

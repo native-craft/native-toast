@@ -1,17 +1,17 @@
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback } from 'react';
 import {
   Animated,
   StyleSheet,
   Pressable,
   Text,
   PanResponder,
-} from "react-native";
-import type { Toast, ToastTheme } from "../core/types";
-import { ToastIcon } from "./ToastIcon";
+} from 'react-native';
+import type { Toast, ToastTheme } from '../core/types';
+import { ToastIcon } from './ToastIcon';
 
 const THEME_TOKENS = {
-  dark: { surface: "#1C1C1E", text: "#FFFFFF", shadowOpacity: 0.15 },
-  light: { surface: "#FFFFFF", text: "#1C1C1E", shadowOpacity: 0.08 },
+  dark: { surface: '#1C1C1E', text: '#FFFFFF', shadowOpacity: 0.15 },
+  light: { surface: '#FFFFFF', text: '#1C1C1E', shadowOpacity: 0.08 },
 };
 
 interface ToastItemProps {
@@ -140,7 +140,7 @@ export function ToastItem({
   const zIndex = 100 - stackIndex;
 
   const messageContent =
-    typeof toast.message === "function" ? toast.message(toast) : toast.message;
+    typeof toast.message === 'function' ? toast.message(toast) : toast.message;
 
   const handleLayout = useCallback(
     (e: any) => {
@@ -174,7 +174,7 @@ export function ToastItem({
             { scale },
           ],
           zIndex,
-          position: "absolute",
+          position: 'absolute',
         },
       ]}
       onLayout={handleLayout}
@@ -200,25 +200,25 @@ export function ToastItem({
 
 const styles = StyleSheet.create({
   container: {
-    maxWidth: "85%",
+    maxWidth: '85%',
     minWidth: 120,
     borderRadius: 12,
-    overflow: "hidden",
-    shadowColor: "#000",
+    overflow: 'hidden',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 12,
     elevation: 8,
   },
   inner: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 16,
     gap: 10,
   },
   message: {
     fontSize: 14,
-    fontWeight: "500",
+    fontWeight: '500',
     lineHeight: 20,
     flexShrink: 1,
   },

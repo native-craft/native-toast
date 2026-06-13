@@ -1,8 +1,8 @@
-import { defineDocs } from "fumadocs-mdx/config";
-import { metaSchema, pageSchema } from "fumapress/adapters/mdx/schema";
+import { defineDocs } from 'fumadocs-mdx/config';
+import { metaSchema, pageSchema } from 'fumapress/adapters/mdx/schema';
 
 export const docs = defineDocs({
-  dir: "content",
+  dir: 'content',
   docs: {
     async: true,
     schema: pageSchema,

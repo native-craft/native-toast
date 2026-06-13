@@ -2,12 +2,7 @@ import { useRef } from 'react';
 import { View, StyleSheet, Pressable, Text } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Heart } from 'lucide-react-native';
-import {
-  toast,
-  ToastContainer,
-  useTheme,
-  setTheme,
-} from '@ncrft/native-toast';
+import { toast, ToastContainer, useTheme, setTheme } from '@ncrft/native-toast';
 
 export default function App() {
   const loadingIdRef = useRef<string | null>(null);
