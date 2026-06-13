@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { View, StyleSheet, Pressable, Text } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Download, Bell, Heart, Wifi } from 'lucide-react-native';
 import {
   toast,
   ToastContainer,
@@ -96,6 +97,50 @@ export default function App() {
           onPress={() => toast('File saved!', { icon: '💾' })}
         >
           <Text style={styles.buttonText}>💾 Emoji Icon</Text>
+        </Pressable>
+
+        <Pressable
+          style={[styles.button, { backgroundColor: '#5856D6' }]}
+          onPress={() =>
+            toast('Download complete!', {
+              icon: <Download size={20} color="#5856D6" />,
+            })
+          }
+        >
+          <Text style={styles.buttonText}>Lucide Download Icon</Text>
+        </Pressable>
+
+        <Pressable
+          style={[styles.button, { backgroundColor: '#FF9500' }]}
+          onPress={() =>
+            toast('New notification!', {
+              icon: <Bell size={20} color="#FF9500" />,
+            })
+          }
+        >
+          <Text style={styles.buttonText}>Lucide Bell Icon</Text>
+        </Pressable>
+
+        <Pressable
+          style={[styles.button, { backgroundColor: '#FF2D55' }]}
+          onPress={() =>
+            toast('Added to favorites!', {
+              icon: <Heart size={20} color="#FF2D55" />,
+            })
+          }
+        >
+          <Text style={styles.buttonText}>Lucide Heart Icon</Text>
+        </Pressable>
+
+        <Pressable
+          style={[styles.button, { backgroundColor: '#34C759' }]}
+          onPress={() =>
+            toast('Connected!', {
+              icon: <Wifi size={20} color="#34C759" />,
+            })
+          }
+        >
+          <Text style={styles.buttonText}>Lucide Wifi Icon</Text>
         </Pressable>
       </View>
 
