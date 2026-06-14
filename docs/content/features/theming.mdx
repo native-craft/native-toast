@@ -1,0 +1,80 @@
+---
+title: Theming
+description: Dark and light themes with container-level and global theme controls.
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+NativeToast ships with two themes and multiple ways to control them at runtime.
+
+## Theme Tokens
+
+### Dark Theme (default)
+
+| Token | Value |
+|-------|-------|
+| `surface` | `#1C1C1E` |
+| `text` | `#FFFFFF` |
+| `shadowOpacity` | `0.15` |
+
+### Light Theme
+
+| Token | Value |
+|-------|-------|
+| `surface` | `#FFFFFF` |
+| `text` | `#1C1C1E` |
+| `shadowOpacity` | `0.08` |
+
+Tokens are applied to the toast background color, text color, and shadow opacity.
+
+## Ways to Set the Theme
+
+### 1. Container-level (per-app)
+
+Set the theme directly on the `ToastContainer` component:
+
+```tsx
+<ToastContainer theme="light" />
+```
+
+This is the simplest approach for apps that use a single fixed theme.
+
+### 2. Global theme store
+
+For apps that support runtime theme switching, use the global theme store:
+
+```tsx
+import { setTheme, useTheme } from '@ncrft/native-toast';
+
+// Set the theme from anywhere
+setTheme('light');
+
+// Read the current theme in any component
+function ThemeToggle() {
+  const theme = useTheme();
+  // theme === 'light' | 'dark'
+}
+```
+
+The global theme store works independently of React context — call `setTheme()` from anywhere, including non-component code.
+
+### Priority
+
+If both are set, the **container-level `theme` prop takes precedence** over the global theme store.
+
+## Style Overrides
+
+User-provided `style` and `textStyle` options on individual toasts override theme tokens:
+
+```tsx
+// Theme says white background, but this toast uses blue
+toast('Special', {
+  style: { backgroundColor: '#007AFF' },
+});
+```
+
+| Layer | Priority |
+|-------|----------|
+| Individual toast `style`/`textStyle` | Highest |
+| Container `theme` prop | Medium |
+| Global theme store (`setTheme`) | Lowest |

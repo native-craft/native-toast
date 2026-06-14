@@ -1,0 +1,129 @@
+---
+title: Types
+description: TypeScript types exported by @ncrft/native-toast.
+---
+
+
+## Toast
+
+The core toast object managed by the store.
+
+```ts
+type Toast = {
+  id: string;
+  type: ToastType;
+  message: ToastMessage;
+  visible: boolean;
+  duration: number;
+  icon?: string | React.ReactNode;
+  style?: ViewStyle;
+  textStyle?: TextStyle;
+  createdAt: number;
+  iconShown?: boolean;
+};
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `string` | Unique identifier (auto-generated `t_N` or custom) |
+| `type` | `ToastType` | Toast variant (`blank`, `success`, `error`, `loading`, `custom`) |
+| `message` | `ToastMessage` | The content to display |
+| `visible` | `boolean` | Whether the toast is in its visible/animated state |
+| `duration` | `number` | Auto-dismiss duration in ms (`Infinity` for loading) |
+| `icon` | `string \| React.ReactNode` | Optional custom icon override |
+| `style` | `ViewStyle` | Optional style override for the toast container |
+| `textStyle` | `TextStyle` | Optional style override for the toast text |
+| `createdAt` | `number` | Creation timestamp (ms since epoch) |
+| `iconShown` | `boolean` | Whether the icon is currently displayed |
+
+---
+
+## ToastOptions
+
+Options accepted by all `toast.*` methods.
+
+```ts
+type ToastOptions = {
+  duration?: number;
+  id?: string;
+  icon?: string | React.ReactNode;
+  style?: ViewStyle;
+  textStyle?: TextStyle;
+};
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `duration` | `number` | Varies by type | Auto-dismiss time in ms. Use `Infinity` to prevent auto-dismiss. |
+| `id` | `string` | Auto-generated | Custom ID. Same ID updates existing toast (upsert). |
+| `icon` | `string \| React.ReactNode` | Built-in per type | Icon override. String = emoji/text, element = any React node. |
+| `style` | `ViewStyle` | — | Style override for the toast container |
+| `textStyle` | `TextStyle` | — | Style override for the toast text |
+
+---
+
+## ToastType
+
+```ts
+type ToastType = 'blank' | 'success' | 'error' | 'loading' | 'custom';
+```
+
+---
+
+## ToastTheme
+
+```ts
+type ToastTheme = 'dark' | 'light';
+```
+
+---
+
+## ToastMessage
+
+The message parameter accepts three forms:
+
+```ts
+type ToastMessage =
+  | string
+  | React.ReactNode
+  | ((toast: Toast) => React.ReactNode);
+```
+
+| Form | Description |
+|------|-------------|
+| `string` | Plain text message |
+| `React.ReactNode` | Any renderable React content (views, images, text, etc.) |
+| `(toast) => React.ReactNode` | Render function that receives the toast object for conditional rendering |
+
+```tsx
+// string
+toast.success('Saved!');
+
+// ReactNode
+toast.custom(<View><Text>Custom</Text></View>);
+
+// Render function
+toast.custom((t) => (
+  <Text>{t.visible ? 'Visible' : 'Hidden'}</Text>
+));
+```
+
+---
+
+## Full Export List
+
+```ts
+import {
+  toast,           // Imperative API object
+  useToaster,      // Timer management hook
+  useToasterStore, // State subscription hook
+  ToastContainer,  // Root overlay component
+  useTheme,        // Theme reader hook
+  setTheme,        // Theme setter function
+  type Toast,
+  type ToastOptions,
+  type ToastType,
+  type ToastTheme,
+  type ToastMessage,
+} from '@ncrft/native-toast';
+```

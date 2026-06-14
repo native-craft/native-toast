@@ -1,0 +1,84 @@
+---
+title: Animations
+description: Entry/exit transitions, SVG icon draw animations, stack interpolation, and swipe gestures.
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+NativeToast uses React Native's built-in `Animated` API for all animations — no Reanimated worklets required.
+
+## Entry Animation
+
+When a toast mounts, it fades in and slides down from above:
+
+| Property | From | To | Driver |
+|----------|------|----|--------|
+| `opacity` | 0 | 1 | Native |
+| `translateY` | -20px | 0 | Native |
+
+**Spring config:** tension 100, friction 12
+
+<Callout type="info">
+  Entry and exit animations use `useNativeDriver: true` for smooth, JS-thread-independent performance.
+</Callout>
+
+## Exit Animation
+
+When a toast is dismissed (via `toast.dismiss()` or auto-dismiss), it fades out and slides up:
+
+| Property | From | To | Driver |
+|----------|------|----|--------|
+| `opacity` | 1 | 0 | Native |
+| `translateY` | 0 | -10px | Native |
+
+**Duration:** 150ms (`Animated.timing`)
+
+After the exit animation completes, the toast is removed from state after a 1000ms cleanup delay (`REMOVE_DELAY`).
+
+## SVG Icon Animations
+
+### Success Checkmark
+
+The green checkmark animates in two phases:
+
+1. **Scale spring** — SVG group scales from 0.3 → 1 (tension 200, friction 12)
+2. **Stroke draw** — The `<Polyline>` path draws itself via `stroke-dashoffset` animation, starting 200ms after the scale begins
+
+### Error X-Mark
+
+The red X-mark animates similarly:
+
+1. **Scale spring** — same config as success (0.3 → 1, tension 200, friction 12)
+2. **Line draws** — Two `<Line>` elements draw sequentially:
+   - First line: 150ms delay
+   - Second line: 250ms delay
+
+Both use `Animated.createAnimatedComponent` to wrap SVG elements (`Polyline`, `Line`) for animated `strokeDashoffset`.
+
+<Callout type="warning">
+  SVG icon animations use `useNativeDriver: false` because `strokeDashoffset` is not a native transform property. This is expected and correct.
+</Callout>
+
+## Stack Expand/Collapse
+
+When the toast stack transitions between collapsed and expanded states, a spring-animated `expandProgress` value drives interpolation:
+
+| State | `expandProgress` |
+|-------|-----------------|
+| Collapsed | 0 |
+| Expanded | 1 |
+
+**Spring config:** tension 100, friction 12
+
+This value interpolates scale, translateY, and opacity for each toast in the stack. See [Stack Mode](/features/stack-mode) for details.
+
+## Combined Transform Pipeline
+
+Each toast's visual transform is computed by combining multiple `Animated` values:
+
+| Transform | Composition |
+|-----------|-------------|
+| `translateY` | `entryY + stackTranslateY + pan.y` (via `Animated.add`) |
+| `opacity` | `entryOpacity × stackOpacity` (via `Animated.multiply`) |
+
+This means entry animations, stack positioning, and swipe gestures all contribute to the final position simultaneously without conflicts.

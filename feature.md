@@ -15,9 +15,9 @@ A zero-dependency, headless toast notification system for React Native (Expo) wi
 | `toast.custom(message, options?)`  | Custom toast — no built-in icon, message can be ReactNode | 4000ms                   |
 | `toast.dismiss(toastId?)`          | Triggers exit animation then removes. No ID = dismiss all | —                        |
 | `toast.remove(toastId?)`           | Immediately removes with no animation. No ID = remove all | —                        |
-| `toast.promise(promise, msgs)`     | Shows loading → success/error based on resolution         | —                        |
+| `toast.promise(promise, msgs, opts?)` | Shows loading → success/error based on resolution. `promise` accepts `Promise<T>` or `() => Promise<T>` | —                        |
 
-- All methods return the toast `id` string (except `dismiss`/`remove`)
+- All methods return the toast `id` string (except `dismiss`/`remove`/`promise`)
 - Auto-incrementing IDs (`t_1`, `t_2`, …) or custom via `opts.id`
 - **Upsert behavior**: same `id` updates existing toast instead of creating duplicate
 
@@ -63,7 +63,7 @@ A zero-dependency, headless toast notification system for React Native (Expo) wi
 - Spring-animated `expandProgress` (0=collapsed, 1=expanded, tension 100, friction 12)
 - Interpolates scale, translateY, and opacity
 
-### Swipe Gesture Anim
+### Swipe Gesture Animation
 
 - **Fling-off**: `Animated.timing` to Y=-300 over 200ms when threshold exceeded
 - **Snap-back**: `Animated.spring` to Y=0 when threshold not met (tension 100, friction 10)
@@ -232,4 +232,4 @@ import {
 | Module-level store                     | Accessible outside React (imperative `toast()` calls) |
 | Container-level theme                  | Simpler API than per-toast themes                     |
 | `useNativeDriver: false` for SVG       | stroke-dashoffset not a native transform              |
-| `useNativeDriver: true` for entry/exit | Scale/opacity animations use native driver            |
+| `useNativeDriver: true` for entry/exit | Opacity/translateY animations use native driver            |

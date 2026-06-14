@@ -1,0 +1,80 @@
+---
+title: Architecture
+description: State management pattern, reducer design, and technical decisions.
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+## State Management
+
+NativeToast uses a **module-level state store with an observer pattern** — not React Context. This is the key architectural decision that enables the imperative API.
+
+### Why not Context?
+
+The `toast()` function must be callable from anywhere: event handlers, async callbacks, navigation handlers, non-React modules. React Context only works inside the component tree, so a module-level store is used instead.
+
+### Store Design
+
+| Feature | Detail |
+|---------|--------|
+| **Pattern** | Module-level state store with observer (not React context) |
+| **Reducer** | Pure function handling 7 action types |
+| **Actions** | `ADD_TOAST`, `UPDATE_TOAST`, `UPSERT_TOAST`, `DISMISS_TOAST`, `REMOVE_TOAST`, `START_PAUSE`, `END_PAUSE` |
+| **TOAST_LIMIT** | Max 3 simultaneous toasts (older dropped) |
+| **Listener system** | `addListener(fn)` → unsubscribe function |
+| **React bridge** | `useToasterStore()` hook subscribes to store via `useSyncExternalStore` |
+
+### Upsert Behavior
+
+When a toast is created with the same `id` as an existing one, the store performs an **upsert** (update instead of duplicate):
+
+```tsx
+const id = 'my-toast';
+
+toast.loading('Loading…', { id });
+// Later, update the same toast:
+toast.success('Done!', { id });
+```
+
+## Timer & Lifecycle
+
+| Feature | Detail |
+|---------|--------|
+| Auto-dismiss | Each toast auto-dismisses after its duration |
+| `REMOVE_DELAY` | 1000ms gap between dismiss (exit animation) and removal |
+| AppState pause | Timers pause when app goes to background |
+| AppState resume | Timers resume with correct remaining time on foreground |
+| Pause accumulation | Total paused time tracked across multiple background cycles |
+| Infinity duration | Loading toasts excluded from timer entirely |
+| Two-phase removal | `DISMISS_TOAST` → `REMOVE_TOAST` (exit anim → cleanup) |
+| Timer cleanup | All pending timeouts cleaned up on state change |
+
+## Technical Decisions
+
+| Decision | Rationale |
+|----------|-----------|
+| `Animated` (not Reanimated) | Built-in, no worklet setup needed |
+| `react-native-svg` | Animated SVG icons with stroke-dashoffset |
+| `PanResponder` (not gesture-handler) | Built-in, no extra dependency |
+| Module-level store | Accessible outside React (imperative `toast()` calls) |
+| Container-level theme | Simpler API than per-toast themes |
+| `useNativeDriver: false` for SVG | `strokeDashoffset` is not a native transform |
+| `useNativeDriver: true` for entry/exit | Opacity/translateY animations use native driver |
+
+## Layout & Positioning
+
+| Feature | Detail |
+|---------|--------|
+| Position | Top-center (hardcoded) |
+| `topOffset` | Configurable vertical offset (default 50px) |
+| Safe area | Integrated via `useSafeAreaInsets()` |
+| `gutter` | Configurable gap between expanded toasts (default 8px) |
+| Height measurement | Each toast self-measures via `onLayout` |
+| Fallback height | 48px used before measurement completes |
+| Overlay | Full-screen `absoluteFill` with `pointerEvents="box-none"` |
+| Max width | 85% of screen |
+| Min width | 120px |
+| Content layout | Horizontal row: icon (left) + message (right) |
+| Text max lines | 2 lines with ellipsis |
+| Font scaling | Disabled (`allowFontScaling={false}`) |
+| Text selection | Disabled (`selectable={false}`) |

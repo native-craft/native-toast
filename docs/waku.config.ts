@@ -9,5 +9,14 @@ export default defineConfig({
     resolve: {
       dedupe: ['react', 'react-dom', 'react-server-dom-webpack'],
     },
+    optimizeDeps: {
+      include: [
+        'debug',
+        'micromark',
+        'unist-util-visit',
+        'remark-gfm',
+        'hast-util-to-html',
+      ],
+    },
   },
 });

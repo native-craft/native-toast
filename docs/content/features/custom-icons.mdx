@@ -1,0 +1,58 @@
+---
+title: Custom Icons
+description: Replace built-in icons with emojis, icon library components, or any React element.
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+Every toast method accepts an optional `icon` prop that overrides the built-in icon behavior.
+
+## Icon Input Types
+
+| Input | Rendering | Example |
+|-------|-----------|---------|
+| No `icon` prop | Built-in icon per toast type (success → checkmark, error → X-mark) | `toast.success('Done')` |
+| String | Rendered in `<Text fontSize={18}>` — emoji and glyph support | `icon: '💾'` |
+| React element | Rendered as-is — any React component | `icon: <Ionicons name="checkmark" />` |
+
+## Examples
+
+### Emoji icons
+
+```tsx
+toast('New message', { icon: '💬' });
+toast.success('Level up!', { icon: '🎮' });
+toast.error('Out of memory', { icon: '⚠️' });
+toast.loading('Syncing…', { icon: '🔄' });
+```
+
+### Icon library elements
+
+```tsx
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { Heart } from 'lucide-react-native';
+
+toast.custom('Liked!', {
+  icon: <Heart size={20} color="#FF3B30" />,
+});
+
+toast('Settings', {
+  icon: <Ionicons name="settings" size={20} color="#fff" />,
+});
+```
+
+### Overriding built-in SVG icons
+
+When you pass an `icon` to `toast.success()` or `toast.error()`, it **replaces** the built-in animated SVG:
+
+```tsx
+// No icon prop → animated green checkmark SVG appears
+toast.success('Saved');
+
+// With icon prop → custom icon replaces the SVG
+toast.success('Saved', { icon: '✅' });
+```
+
+<Callout type="info">
+  The built-in SVG icons (success checkmark, error X-mark) have entrance animations. Custom icon elements and emojis do not animate — they appear immediately.
+</Callout>

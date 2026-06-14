@@ -8,7 +8,8 @@ import { docs } from './.source/server';
 export default defineConfig({
   content: docs.toFumadocsSource(),
   site: {
-    name: 'Fumapress',
+    name: 'Native Toast',
+    baseUrl: 'https://native-toast-nc.vercel.app',
   },
 })
   .plugins(flexsearchPlugin(), llmsPlugin(), takumiPlugin())

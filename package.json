@@ -47,7 +47,7 @@
     "prepare": "bob build",
     "release": "release-it --only-version",
     "deploy:package": "npm publish",
-    "deploy:docs": "vercel --prod"
+    "deploy:docs": "vercel --prod --cwd docs"
   },
   "keywords": [
     "react-native",

@@ -1,0 +1,54 @@
+---
+title: Stack Mode
+description: Multiple toasts collapse into a visual stack — tap to expand, swipe to dismiss.
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+When multiple toasts are active, NativeToast groups them into a **stack** with two visual states: **collapsed** and **expanded**.
+
+## Collapsed Stack (default)
+
+In collapsed mode, toasts overlap with depth-based visual reduction, creating a stacked card effect:
+
+| Property | Formula | Example (3 toasts) |
+|----------|---------|-------------------|
+| Scale | `1 - stackIndex × 0.06` | Front: 1.0, 2nd: 0.94, 3rd: 0.88 |
+| Vertical offset | `stackIndex × 6px` downward | Front: 0px, 2nd: 6px, 3rd: 12px |
+| Opacity | `max(0, 1 - stackIndex × 0.15)` | Front: 1.0, 2nd: 0.85, 3rd: 0.70 |
+
+The front toast (index 0) is fully visible; toasts behind it are progressively smaller, lower, and more transparent.
+
+**Z-index:** `100 - stackIndex` ensures correct visual layering (front toast on top).
+
+## Expanded Stack
+
+When expanded, all toasts spread out vertically and become fully visible:
+
+- Each toast positioned based on cumulative measured heights + gutter spacing
+- Uniform scale (1.0) and full opacity
+- No overlap
+
+The gutter (gap between expanded toasts) defaults to **8px** and can be configured on the container:
+
+```tsx
+<ToastContainer gutter={16} />
+```
+
+## Stack Interactions
+
+| Interaction | Behavior |
+|------------|----------|
+| **Tap stack** | Toggles between collapsed and expanded |
+| **Auto-collapse** | Stack auto-collapses when only 1 toast remains |
+| **Backdrop dismiss** | Tapping outside expanded toasts collapses the stack |
+| **Bulk dismiss (collapsed)** | Dismissing a toast in collapsed mode dismisses **all** toasts |
+| **Single dismiss (expanded)** | Dismissing in expanded mode removes only that toast |
+
+## Toast Limit
+
+A maximum of **3 simultaneous toasts** (`TOAST_LIMIT`) are allowed. When a new toast exceeds this limit, the oldest toast is dropped.
+
+## Switching States
+
+The transition between collapsed and expanded is animated with a spring (tension 100, friction 12) that interpolates scale, translateY, and opacity for each toast. See [Animations](/features/animation) for technical details.

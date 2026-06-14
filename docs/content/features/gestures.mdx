@@ -1,0 +1,56 @@
+---
+title: Gesture Handling
+description: Swipe up to dismiss — vertical PanResponder with activation and dismiss thresholds.
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+NativeToast uses React Native's built-in `PanResponder` for swipe-to-dismiss. No `react-native-gesture-handler` dependency required.
+
+## How It Works
+
+Each toast listens for vertical drag gestures. When the user swipes upward past a threshold, the toast animates off-screen and is dismissed.
+
+| Behavior | Detail |
+|----------|--------|
+| Swipe direction | Vertical only (upward to dismiss) |
+| Activation threshold | `\|dy\| > 5` AND `\|dy\| > \|dx\|` |
+| Dismiss threshold | `dy < -40px` (40px upward) |
+| Horizontal lock-out | Horizontal swipes are ignored |
+| Tap passthrough | `onStartShouldSetPanResponder` returns `false` (taps pass through to underlying views) |
+| Visibility guard | Pan only activates when the toast is visible |
+
+## Animation Behavior
+
+### Swipe past threshold (dismiss)
+
+When the drag exceeds `-40px` vertically, the toast flings off-screen:
+
+```js
+Animated.timing(pan.y, {
+  toValue: -300,
+  duration: 200,
+  useNativeDriver: true,
+}).start(() => onDismiss(toast.id));
+```
+
+### Swipe under threshold (snap back)
+
+When the drag doesn't reach the threshold, the toast springs back to its original position:
+
+```js
+Animated.spring(pan.y, {
+  toValue: 0,
+  tension: 100,
+  friction: 10,
+  useNativeDriver: true,
+}).start();
+```
+
+## Technical Implementation
+
+<Callout type="info">
+  The gesture handler uses **refs** for `toastVisible` and `onDismiss` to avoid stale closures — a common pitfall with `PanResponder` when component state changes between gesture start and end.
+</Callout>
+
+The pan gesture's `dy` value contributes to the toast's combined `translateY` transform (see [Animations](/features/animation) → Combined Transform Pipeline). This means the toast follows the user's finger in real-time during the drag, then either flings off or snaps back.

@@ -1,0 +1,66 @@
+---
+title: Installation
+description: Install @ncrft/native-toast and its peer dependencies.
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+
+## Install the package
+
+<Tabs items={['pnpm', 'npm', 'yarn']}>
+  <Tab value="pnpm" label="pnpm">
+    ```bash
+    pnpm add @ncrft/native-toast
+    ```
+  </Tab>
+  <Tab value="npm" label="npm">
+    ```bash
+    npm install @ncrft/native-toast
+    ```
+  </Tab>
+  <Tab value="yarn" label="yarn">
+    ```bash
+    yarn add @ncrft/native-toast
+    ```
+  </Tab>
+</Tabs>
+
+## Peer dependencies
+
+NativeToast relies on two peer dependencies that are standard in most Expo / React Native projects:
+
+| Package | Minimum version | Purpose |
+|---------|----------------|---------|
+| `react-native-svg` | `>= 13.0.0` | Animated SVG icons (success checkmark, error X-mark) |
+| `react-native-safe-area-context` | `>= 4.0.0` | Safe area inset handling for notch / status bar avoidance |
+
+<Callout type="info">
+  If you created your project with `expo install`, these are likely already present. You can verify with `npx expo install react-native-svg react-native-safe-area-context`.
+</Callout>
+
+### Install peer dependencies (if missing)
+
+<Tabs items={['pnpm', 'npm', 'yarn']}>
+  <Tab value="pnpm" label="pnpm">
+    ```bash
+    pnpm add react-native-svg react-native-safe-area-context
+    ```
+  </Tab>
+  <Tab value="npm" label="npm">
+    ```bash
+    npm install react-native-svg react-native-safe-area-context
+    ```
+  </Tab>
+  <Tab value="yarn" label="yarn">
+    ```bash
+    yarn add react-native-svg react-native-safe-area-context
+    ```
+  </Tab>
+</Tabs>
+
+## Expo compatibility
+
+NativeToast is tested against **Expo SDK 54** (`react-native@0.81`). It should work on any React Native 0.81+ project.
+
+No `react-native-reanimated` or `react-native-gesture-handler` setup is required — the library uses only built-in `Animated` and `PanResponder` APIs.

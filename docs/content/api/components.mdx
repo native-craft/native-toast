@@ -1,0 +1,105 @@
+---
+title: Components
+description: ToastContainer, useToaster, useToasterStore, useTheme, and setTheme exports.
+---
+
+
+## ToastContainer
+
+The root overlay component that renders all active toasts. Place it once at the top level of your app.
+
+```tsx
+import { ToastContainer } from '@ncrft/native-toast';
+```
+
+### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `topOffset` | `number` | `50` | Vertical offset from the top of the safe area, in pixels |
+| `gutter` | `number` | `8` | Gap between expanded toasts, in pixels |
+| `theme` | `'dark' \| 'light'` | `'dark'` | Container-level theme override |
+
+### Usage
+
+```tsx
+<ToastContainer
+  topOffset={80}
+  gutter={12}
+  theme="light"
+/>
+```
+
+### Requirements
+
+Must be rendered inside a `SafeAreaProvider` from `react-native-safe-area-context`:
+
+```tsx
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { ToastContainer } from '@ncrft/native-toast';
+
+function App() {
+  return (
+    <SafeAreaProvider>
+      {/* app content */}
+      <ToastContainer />
+    </SafeAreaProvider>
+  );
+}
+```
+
+---
+
+## useToaster
+
+Internal hook for timer management. Subscribes to the toast store and manages auto-dismiss timers, AppState pause/resume, and cleanup.
+
+```tsx
+import { useToaster } from '@ncrft/native-toast';
+```
+
+This hook is used internally by `ToastContainer`. You typically don't need to call it directly.
+
+---
+
+## useToasterStore
+
+React bridge to the module-level toast store. Returns the current array of toasts.
+
+```tsx
+import { useToasterStore } from '@ncrft/native-toast';
+
+const toasts = useToasterStore();
+```
+
+Uses `useSyncExternalStore` under the hood for concurrent-safe subscriptions.
+
+---
+
+## useTheme
+
+Reads the current global theme from the theme store.
+
+```tsx
+import { useTheme } from '@ncrft/native-toast';
+
+const theme = useTheme();
+// theme === 'dark' | 'light'
+```
+
+This reflects the global theme set via `setTheme()`. The container-level `theme` prop (if set) takes precedence over this value.
+
+---
+
+## setTheme
+
+Sets the global theme. Callable from anywhere — inside or outside React components.
+
+```tsx
+import { setTheme } from '@ncrft/native-toast';
+
+setTheme('light');
+setTheme('dark');
+```
+
+This updates the global theme store and all subscribed components re-render with the new theme.

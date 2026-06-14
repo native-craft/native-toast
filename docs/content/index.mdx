@@ -1,8 +1,47 @@
 ---
-title: My Page
-description: Hello World
+title: Overview
+description: A zero-dependency, headless toast notification system for React Native.
 ---
 
-# Overview
+# NativeToast
 
-This is my first document.
+NativeToast is a zero-dependency, headless toast notification system for React Native (Expo) with an imperative API, animated SVG icons, stack mode, swipe dismiss, custom icons, and dark/light themes.
+
+## Features
+
+- **Imperative API** — Call `toast.success()`, `toast.error()`, etc. from anywhere, no context or providers needed beyond the container
+- **Animated SVG Icons** — Success checkmark and error X-mark drawn with stroke animations
+- **Stack Mode** — Multiple toasts collapse into a visual stack with depth-based scaling; tap to expand
+- **Swipe to Dismiss** — Swipe up on any toast to remove it
+- **Custom Icons** — Pass emojis, icon library elements, or any React node
+- **Dark & Light Themes** — Built-in theme tokens, switchable at runtime
+- **AppState-Aware Timers** — Toast timers pause when the app backgrounds and resume correctly on foreground
+- **Zero Dependencies** — Only peer deps: `react-native-svg` and `react-native-safe-area-context`
+
+## Quick Example
+
+```tsx
+import { toast } from '@ncrft/native-toast';
+
+// Show a success toast
+toast.success('Settings saved!');
+
+// Show an error with a custom duration
+toast.error('Something went wrong', { duration: 6000 });
+
+// Loading → success/error via promise
+toast.promise(
+  fetch('/api/data'),
+  {
+    loading: 'Fetching data…',
+    success: 'Done!',
+    error: 'Request failed',
+  }
+);
+```
+
+## Next Steps
+
+1. **[Install](/getting-started/installation)** the package and its peer dependencies.
+2. **[Quick Start](/getting-started/quickstart)** — Wire up the `ToastContainer` and fire your first toast.
+3. Explore the **[Features](/features/toast-types)** and **[API Reference](/api/toast)** sections.

@@ -1,0 +1,12 @@
+{
+  "title": "Features",
+  "pages": [
+    "toast-types",
+    "animation",
+    "stack-mode",
+    "gestures",
+    "custom-icons",
+    "theming",
+    "architecture"
+  ]
+}

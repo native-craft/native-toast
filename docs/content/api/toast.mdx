@@ -1,0 +1,158 @@
+---
+title: toast
+description: Imperative API methods for creating, updating, and dismissing toasts.
+---
+
+
+The `toast` object is the primary API for interacting with NativeToast. Import it once and use it anywhere.
+
+```tsx
+import { toast } from '@ncrft/native-toast';
+```
+
+## Methods
+
+### `toast(message, options?)`
+
+Generic blank toast — no built-in icon.
+
+| Parameter | Type | Default |
+|-----------|------|---------|
+| `message` | `ToastMessage` | — |
+| `options` | `ToastOptions` | `{ duration: 4000 }` |
+
+**Returns:** `string` — the toast ID
+
+```tsx
+const id = toast('Hello world');
+```
+
+---
+
+### `toast.success(message, options?)`
+
+Success toast with animated green checkmark SVG.
+
+| Parameter | Type | Default |
+|-----------|------|---------|
+| `message` | `ToastMessage` | — |
+| `options` | `ToastOptions` | `{ duration: 2000 }` |
+
+**Returns:** `string` — the toast ID
+
+---
+
+### `toast.error(message, options?)`
+
+Error toast with animated red X-mark SVG.
+
+| Parameter | Type | Default |
+|-----------|------|---------|
+| `message` | `ToastMessage` | — |
+| `options` | `ToastOptions` | `{ duration: 4000 }` |
+
+**Returns:** `string` — the toast ID
+
+---
+
+### `toast.loading(message, options?)`
+
+Loading toast with native `ActivityIndicator` spinner. Never auto-dismisses.
+
+| Parameter | Type | Default |
+|-----------|------|---------|
+| `message` | `ToastMessage` | — |
+| `options` | `ToastOptions` | `{ duration: Infinity }` |
+
+**Returns:** `string` — the toast ID
+
+```tsx
+const id = toast.loading('Uploading…');
+// later:
+toast.dismiss(id);
+```
+
+---
+
+### `toast.custom(message, options?)`
+
+Custom toast — no built-in icon. Message can be any ReactNode.
+
+| Parameter | Type | Default |
+|-----------|------|---------|
+| `message` | `ToastMessage` | — |
+| `options` | `ToastOptions` | `{ duration: 4000 }` |
+
+**Returns:** `string` — the toast ID
+
+---
+
+### `toast.dismiss(toastId?)`
+
+Triggers exit animation, then removes the toast after the cleanup delay.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `toastId` | `string \| undefined` | Specific toast to dismiss. Omit to dismiss **all** toasts. |
+
+**Returns:** `void`
+
+```tsx
+toast.dismiss('t_3');   // dismiss specific toast
+toast.dismiss();        // dismiss all
+```
+
+---
+
+### `toast.remove(toastId?)`
+
+Immediately removes a toast with **no exit animation**.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `toastId` | `string \| undefined` | Specific toast to remove. Omit to remove **all** toasts. |
+
+**Returns:** `void`
+
+---
+
+### `toast.promise(promise, messages, options?)`
+
+Shows a loading toast, then transitions to success or error based on promise resolution.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `promise` | `Promise<T> \| (() => Promise<T>)` | The promise to track, or a function returning one |
+| `messages` | `{ loading, success, error }` | Messages for each state |
+| `options` | `ToastOptions` | Optional toast options |
+
+**Returns:** `void`
+
+```tsx
+toast.promise(
+  fetch('/api/data'),
+  {
+    loading: 'Fetching…',
+    success: 'Data loaded!',
+    error: 'Fetch failed',
+  },
+  { id: 'fetch-toast' }
+);
+```
+
+## Toast IDs
+
+- Auto-incrementing: `t_1`, `t_2`, `t_3`, …
+- Custom: pass `id` in options → `toast.loading('…', { id: 'my-id' })`
+
+## Upsert Behavior
+
+Creating a toast with an existing `id` updates the existing toast instead of creating a duplicate. This is useful for promise flows:
+
+```tsx
+const id = 'upload';
+
+toast.loading('Uploading…', { id });
+// Later, same ID → updates the existing toast:
+toast.success('Upload complete!', { id });
+```

@@ -1,0 +1,92 @@
+---
+title: Quick Start
+description: Wire up the ToastContainer and fire your first toast in under two minutes.
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+## 1. Add the ToastContainer
+
+Wrap your app (or place at the top level) with `<ToastContainer>`. This renders the full-screen overlay that manages toast positioning, stacking, and animations.
+
+```tsx
+import { ToastContainer } from '@ncrft/native-toast';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+export default function App() {
+  return (
+    <SafeAreaProvider>
+      {/* your app content */}
+      <ToastContainer />
+    </SafeAreaProvider>
+  );
+}
+```
+
+<Callout type="warning">
+  `ToastContainer` must be inside a `SafeAreaProvider` (from `react-native-safe-area-context`) so it can respect notch and status bar insets.
+</Callout>
+
+## 2. Fire a toast
+
+Import the `toast` object and call any method from anywhere in your code — no hooks, no context, no props to pass down.
+
+```tsx
+import { toast } from '@ncrft/native-toast';
+import { TouchableOpacity, Text } from 'react-native';
+
+export function SaveButton() {
+  return (
+    <TouchableOpacity onPress={() => toast.success('Settings saved!')}>
+      <Text>Save</Text>
+    </TouchableOpacity>
+  );
+}
+```
+
+## 3. Try all toast types
+
+```tsx
+import { toast } from '@ncrft/native-toast';
+
+// Generic — no icon
+toast('Hello world');
+
+// Success — animated green checkmark
+toast.success('Profile updated');
+
+// Error — animated red X-mark
+toast.error('Network error');
+
+// Loading — spinner, never auto-dismisses
+const id = toast.loading('Uploading…');
+
+// Dismiss the loading toast later
+toast.dismiss(id);
+
+// Custom — pass any ReactNode as the message
+toast.custom(
+  <Text style={{ color: '#fff' }}>Custom content here</Text>
+);
+```
+
+## 4. Promise-based toasts
+
+Show a loading toast that automatically transitions to success or error based on a promise:
+
+```tsx
+toast.promise(
+  () => fetch('/api/profile').then((r) => r.json()),
+  {
+    loading: 'Loading profile…',
+    success: 'Profile loaded!',
+    error: 'Failed to load profile',
+  }
+);
+```
+
+## Next steps
+
+- **[Toast Types & Variants](/features/toast-types)** — Learn about each toast type and when to use them.
+- **[Stack Mode](/features/stack-mode)** — Understand how multiple toasts are displayed.
+- **[API Reference](/api/toast)** — Full method signatures and options.

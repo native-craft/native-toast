@@ -1,0 +1,91 @@
+---
+title: Toast Types & Variants
+description: Learn about each toast type — blank, success, error, loading, and custom.
+---
+
+NativeToast supports five toast types, each with distinct visual treatment and default behavior.
+
+## Types Overview
+
+| Type | Method | Icon | Default Duration | Use Case |
+|------|--------|------|-----------------|----------|
+| `blank` | `toast(message)` | None | 4000ms | Generic notifications |
+| `success` | `toast.success(message)` | Animated green checkmark SVG | 2000ms | Positive confirmations |
+| `error` | `toast.error(message)` | Animated red X-mark SVG | 4000ms | Error states |
+| `loading` | `toast.loading(message)` | Native `ActivityIndicator` spinner | ∞ (never auto-dismisses) | Async operations |
+| `custom` | `toast.custom(message)` | None (use `icon` option) | 4000ms | Fully custom content |
+
+## Usage
+
+```tsx
+import { toast } from '@ncrft/native-toast';
+
+// blank — no built-in icon
+toast('New message from Alice');
+
+// success — animated checkmark appears
+toast.success('Payment received!');
+
+// error — animated X-mark appears
+toast.error('Invalid credentials');
+
+// loading — spinner spins, stays until dismissed
+const id = toast.loading('Connecting to server…');
+
+// custom — no icon unless you provide one
+toast.custom('Gift sent!', { icon: '🎁' });
+```
+
+## Message Types
+
+The `message` parameter accepts multiple formats for maximum flexibility:
+
+```tsx
+// Plain string
+toast.success('Done!');
+
+// Any ReactNode — rendered as-is
+toast.custom(<View><Text>Complex</Text><Image source={...} /></View>);
+
+// Render function — receives the toast object for conditional rendering
+toast.custom((t) => (
+  <Text>{t.visible ? 'Showing' : 'Hiding'}</Text>
+));
+```
+
+## Style Overrides
+
+Every toast type accepts `style` and `textStyle` options that are spread onto the toast container and text elements respectively:
+
+```tsx
+toast.success('Saved', {
+  style: {
+    backgroundColor: '#4CAF50',
+    borderRadius: 4,
+  },
+  textStyle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
+```
+
+These overrides take precedence over theme tokens.
+
+## Type-Specific Default Durations
+
+| Type | Auto-dismisses after |
+|------|---------------------|
+| `blank` | 4000ms |
+| `success` | 2000ms |
+| `error` | 4000ms |
+| `loading` | Never (must be manually dismissed) |
+| `custom` | 4000ms |
+
+Override any duration with the `duration` option:
+
+```tsx
+toast.error('Critical failure', { duration: 10000 });
+```
+
+Set `duration: Infinity` to prevent auto-dismiss on any type.
