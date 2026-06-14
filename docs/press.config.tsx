@@ -10,6 +10,11 @@ export default defineConfig({
   site: {
     name: 'Native Toast',
     baseUrl: 'https://native-toast-nc.vercel.app',
+    git: {
+      user: 'native-craft',
+      repo: 'native-toast',
+      branch: 'main',
+    },
   },
 })
   .plugins(flexsearchPlugin(), llmsPlugin(), takumiPlugin())
