@@ -2,18 +2,10 @@ name: CI
 
 # NOTE: CI disabled during yarn → pnpm migration.
 # All commands below still use `yarn` and need updating to `pnpm`
-# before re-enabling. To re-enable, uncomment the `on:` block below.
-#
-# on:
-#   push:
-#     branches:
-#       - main
-#   pull_request:
-#     branches:
-#       - main
-#   merge_group:
-#     types:
-#       - checks_requested
+# before re-enabling. To re-enable, replace workflow_dispatch with
+# the push/pull_request/merge_group triggers below.
+on:
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
