@@ -1,7 +1,7 @@
 {
   "name": "@ncrft/native-toast",
-  "version": "0.1.0",
-  "description": "react native toast package",
+  "version": "1.0.0",
+  "description": "Zero-dependency, headless toast notifications for React Native",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
   "exports": {
@@ -13,23 +13,7 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "src",
-    "lib",
-    "android",
-    "ios",
-    "cpp",
-    "*.podspec",
-    "react-native.config.js",
-    "!ios/build",
-    "!android/build",
-    "!android/gradle",
-    "!android/gradlew",
-    "!android/gradlew.bat",
-    "!android/local.properties",
-    "!**/__tests__",
-    "!**/__fixtures__",
-    "!**/__mocks__",
-    "!**/.*"
+    "lib"
   ],
   "scripts": {
     "dev:example": "pnpm --filter @ncrft/native-toast-example start",
@@ -51,21 +35,28 @@
   },
   "keywords": [
     "react-native",
+    "react",
+    "toast",
+    "notification",
+    "snackbar",
+    "expo",
     "ios",
-    "android"
+    "android",
+    "animated"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/native-craft/native-toast.git"
   },
-  "author": "Gazi2050 <gazi45344@gmail.com> (https://github.com/native-craft)",
+  "author": "gazi2050",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/native-craft/native-toast/issues"
   },
-  "homepage": "https://github.com/native-craft/native-toast#readme",
+  "homepage": "https://native-toast-nc.vercel.app",
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^21.0.2",
