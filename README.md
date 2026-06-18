@@ -1,4 +1,4 @@
-<p align="center"><img src="./assets/hero.png" width="600" alt="NativeToast" /></p>
+<p align="center"><img src="./assets/hero.png" width="800" alt="NativeToast" /></p>
 
 # NativeToast
 
