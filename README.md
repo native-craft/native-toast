@@ -1,10 +1,8 @@
+<p align="center"><img src="./assets/hero.png" width="600" alt="NativeToast" /></p>
+
 # NativeToast
 
 A zero-dependency, headless toast notification system for React Native (Expo) with an imperative API, animated SVG icons, stack mode, swipe dismiss, custom icons, and dark/light themes.
-
-## Preview
-
-<p align="center"><img src="./assets/hero.png" width="280" alt="NativeToast preview" /></p>
 
 ## Examples
 
