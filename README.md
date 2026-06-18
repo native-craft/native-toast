@@ -2,6 +2,10 @@
 
 A zero-dependency, headless toast notification system for React Native (Expo) with an imperative API, animated SVG icons, stack mode, swipe dismiss, custom icons, and dark/light themes.
 
+## Preview
+
+![Preview](https://files.catbox.moe/vzcwn9.gif)
+
 ## Installation
 
 ```bash
