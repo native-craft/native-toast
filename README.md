@@ -4,7 +4,7 @@ A zero-dependency, headless toast notification system for React Native (Expo) wi
 
 ## Preview
 
-<img src="https://files.catbox.moe/vzcwn9.gif" width="280" alt="Preview" />
+<p align="center"><img src="./assets/hero.png" width="280" alt="NativeToast preview" /></p>
 
 ## Examples
 
